@@ -1,6 +1,6 @@
 import { Menu } from "./menu";
 
-interface ILayoutProps {
+interface ILayoutProps  {
 
     title?: string;
     children?: React.ReactNode;
@@ -16,7 +16,7 @@ export const Layout: React.FC<ILayoutProps> = (props: ILayoutProps) => {
                 {/** componente do menu lateral esquerdo da aplicação */}
                 <Menu />
 
-                <div className="container columns is-10" >
+                <div className="container columns is-full" >
                     <div className="section">
                         <div className="card">
                             <div className="card-header">
@@ -24,13 +24,13 @@ export const Layout: React.FC<ILayoutProps> = (props: ILayoutProps) => {
                                     {props.title}
                                 </p>
                             </div>
+                        </div>
+
                             <div className="card-content">
                                 <div className="content">
                                     {props.children}
                                 </div>
                             </div>
-                        </div>
-
                     </div>
                 </div>
 
