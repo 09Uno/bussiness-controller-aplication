@@ -2,7 +2,7 @@
 
 
 import { useState } from "react";
-import { Layout, Input } from "../../index";
+import { Layout, Input, TextArea } from "../../index";
 
 export const RegistrationOfProducts: React.FC = () => {
 
@@ -31,59 +31,50 @@ export const RegistrationOfProducts: React.FC = () => {
 
 
 
-
-
-
-
             <div className="columns">
 
-               <Input 
-                id="sku"
-                label="SKU *"   
-                value={sku}
-                onChange={setSku}
-                placeholder="Digite o SKU do produto"
+                <Input
+                    id="price"
+                    label="Preço *"
+                    value={price}
+                    onChange={setPrice}
+                    placeholder="Digite o preço do produto"
+                    classComponent="is-half"
+                />
+
+                <Input
+                    id="sku"
+                    label="SKU *"
+                    value={sku}
+                    onChange={setSku}
+                    placeholder="Digite o SKU do produto"
+                    classComponent="is-half"
 
                 />
-        
-                
-                    <div className="field column is-half">
-                        <div className="control">
-                            <label className="label" htmlFor="inputPrice" >Preço *</label>
-                            <input className="input"
-                                id="price"
-                                value={price}
-                                onChange={e => setPrice(e.target.value)}
-                                placeholder="Digite o valor " />
-
-                        </div>
-                </div>
             </div>
 
             <div className="columns">
-                <div className="field column is-full ">
-                    <div className="control">
-                        <label className="label" htmlFor="inputProduct" >Produto *</label>
-                        <input className="input"
-                            value={productName}
-                            onChange={e => setProductName(e.target.value)}
-                            id="product"
-                            placeholder="Digite o nome do produto" />
-                    </div>
-                </div>
+
+                <Input
+                    id="product"
+                    label="Produto *"
+                    value={productName}
+                    onChange={setProductName}
+                    placeholder="Digite o nome do produto"
+                    classComponent="is-full"
+                />
+
             </div>
 
             <div className="columns">
-                <div className="field column is-full" >
-                    <label className="label" htmlFor="inputDesc" >Descrição  *</label>
-                    <div className="control">
-                        <textarea className="textarea"
-                            id="desc"
-                            value={desc}
-                            onChange={e => setDesc(e.target.value)}
-                            placeholder="Digite a descrição do produto" />
-                    </div>
-                </div>
+                < TextArea
+                    id="desc"
+                    label="Descrição *"
+                    value={desc}
+                    onChange={setDesc}
+                    placeholder="Digite a descrição do produto"
+                    classComponent="is-full"
+                />
             </div>
 
             <div className="field is-grouped">
@@ -101,4 +92,3 @@ export const RegistrationOfProducts: React.FC = () => {
     );
 }
 
-export { Input };
