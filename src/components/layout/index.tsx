@@ -1,9 +1,13 @@
 import { Menu } from "./menu";
+import { feedBackMessage, Alert } from "./../common/message";
 
-interface ILayoutProps  {
+
+
+interface ILayoutProps {
 
     title?: string;
     children?: React.ReactNode;
+    message?: Array<Alert>;
 
 }
 
@@ -26,11 +30,19 @@ export const Layout: React.FC<ILayoutProps> = (props: ILayoutProps) => {
                             </div>
                         </div>
 
-                            <div className="card-content">
-                                <div className="content">
-                                    {props.children}
-                                </div>
+                        <div className="card-content">
+                            <div className="content">
+
+                                {props.message && props.message.map(message => (
+                                    <feedBackMessage
+                                        {...message}
+                                    />
+
+                                ))}
+
+                                {props.children}
                             </div>
+                        </div>
                     </div>
                 </div>
 

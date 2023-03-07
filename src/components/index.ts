@@ -1,4 +1,5 @@
 export {RegistrationOfProducts} from "./products/registration/index";
 export {Layout} from './layout/index';
-export { Input } from './common/index';
-export {TextArea} from './common/index';
+export { Input } from './common/inputs/index';
+export {TextArea} from './common/inputs/index';
+export {feedBackMessage} from './common/message/index';

@@ -1,4 +1,5 @@
 import { InputHTMLAttributes } from "react";
+import { formaTotReal  } from "@/app/utils/money";
 
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -6,6 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     onChange?: (value: any) => void;
     label: string;
     classComponent?: string;
+    currency?: boolean;
 
 }
 
@@ -18,7 +20,9 @@ interface TextAreaProps extends InputHTMLAttributes<HTMLTextAreaElement> {
 }
 
 
-export const Input: React.FC<InputProps> = ({ onChange, classComponent, label, id, ...htmlInputProps }: InputProps) => {
+export const Input: React.FC<InputProps> = ({ onChange, classComponent, label, id, currency ,...htmlInputProps  }: InputProps) => {
+
+
 
     return (
 
@@ -29,6 +33,14 @@ export const Input: React.FC<InputProps> = ({ onChange, classComponent, label, i
                 <input className="input"
                     id={id}
                     onChange={e => {
+
+                        let value : string | undefined = e.target.value;
+
+                        if(value && currency){
+                            value = formaTotReal(value);
+                        }
+
+
                         if (onChange) {
                             onChange(e.target.value);
                         }
