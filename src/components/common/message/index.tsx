@@ -1,7 +1,3 @@
-import { type } from "os"
-
-
-
 
 
 interface FeedBackMessageProps {
@@ -16,18 +12,32 @@ export interface Alert {
 }
 
 
-export const feedBackMessage: React.FC<FeedBackMessageProps> = ({
+export const FeedBackMessage: React.FC<FeedBackMessageProps> = ({
 
     messageType, message, field
 
 }) => {
     return (
 
-        <div className={`notification ${messageType}`}>
-            <button className="delete"></button>
-            {field && ` ${field} : ${message}`}
 
-        </div >
+        <article className={`message ${messageType}`}>
+            <div className="message-header">
+
+                {field ?
+                    <p>{field && `${field}: ${message}`}</p>
+                    :
+                    <p>{message}</p>
+                }
+                <button className="delete" aria-label="delete"></button>
+            </div>
+            <div className="message-body">
+
+
+
+            </div>
+        </article>
+
+
 
     )
 

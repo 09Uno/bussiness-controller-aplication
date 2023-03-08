@@ -6,6 +6,8 @@ import { Layout, Input, TextArea } from "../../index";
 import { Product } from "@/app/models/products";
 import { useProductsService } from "@/app/services";
 import { convertToBigDecimal } from "@/app/utils/money";
+import { Alert } from "@/components/common/message";
+import * as yup from "yup";
 
 export const RegistrationOfProducts: React.FC = () => {
 
@@ -17,9 +19,18 @@ export const RegistrationOfProducts: React.FC = () => {
     const [descr, setDescr] = useState<string>("");
     const [id, setId] = useState<string | undefined >("");
     const [created_at, setCreated_at] = useState<string | undefined>("");
+    const  [message, setMessage] = useState<Array<Alert>>([]);
 
 
+    const validation = yup.object().shape({
 
+        descr: yup.string().trim().required("Descrição é obrigatório"),
+        name: yup.string().trim().required("Nome é obrigatório"),
+        sku: yup.string().trim().required("SKU é obrigatório"),
+        price: yup.number().required("Preço é obrigatório").moreThan(0, "Preço deve ser maior que zero")
+
+
+    })
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -32,26 +43,37 @@ export const RegistrationOfProducts: React.FC = () => {
             descr
         };
 
-        if(id){
+        validation.validate(product).then( () => {
 
-            createProduct
-            .update(product)
-            .then(  product => {
-                console.log(product);
-            })
+            if(id){
+    
+                createProduct
+                .update(product)
+                .then(  product => {
+                    console.log(product);
+                    setMessage([{messageType: "is-success", message: "Produto atualizado com sucesso"}])
+    
+    
+                })
+    
+            }else{
+                
+                createProduct
+                .save(product)
+                .then(  product => {
+                    setId(product.id);
+                    setCreated_at(product.createdAt);
+                    console.log(product);
+                    setMessage([{messageType: "is-success", message: "Produto cadastrado com sucesso"}])
+                })
+    
+            }
 
-        }else{
-            
-            createProduct
-            .save(product)
-            .then(  product => {
-              
-                setId(product.id);
-                setCreated_at(product.createdAt);
-                console.log(product);
-            })
+        }).catch( err => {
 
-        }
+            setMessage([{messageType: "is-danger", message: err.message.toString()}])
+
+        })    
 
 
 
@@ -59,7 +81,7 @@ export const RegistrationOfProducts: React.FC = () => {
 
 
     return (
-        <Layout title="Cadastro de Produtos">
+        <Layout title="Cadastro de Produtos"  message={message}>
 
 
 
