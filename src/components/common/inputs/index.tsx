@@ -8,6 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     label: string;
     classComponent?: string;
     currency?: boolean;
+    error?: string;
 
 }
 
@@ -18,9 +19,10 @@ interface TextAreaProps extends InputHTMLAttributes<HTMLTextAreaElement> {
     classComponent?: string;
 
 }
+    
 
 
-export const Input: React.FC<InputProps> = ({ onChange, classComponent, label, id, currency ,...htmlInputProps  }: InputProps) => {
+export const Input: React.FC<InputProps> = ({ onChange, classComponent, label, id, currency, error,...htmlInputProps  }: InputProps) => {
 
 
 
@@ -47,6 +49,8 @@ export const Input: React.FC<InputProps> = ({ onChange, classComponent, label, i
                     }}
                     {...htmlInputProps}
                 />
+                 {error && <p className="help is-danger">{error}</p>}
+
             </div>
         </div>
 

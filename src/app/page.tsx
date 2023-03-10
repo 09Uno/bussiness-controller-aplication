@@ -1,4 +1,6 @@
 
+
+
 import { Layout } from "@/components/index";
 
 //aqui é renderizado o principal componente da aplicação, ou seja, o layout

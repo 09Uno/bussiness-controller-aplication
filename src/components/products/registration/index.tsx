@@ -8,6 +8,15 @@ import { useProductsService } from "@/app/services";
 import { convertToBigDecimal } from "@/app/utils/money";
 import { Alert } from "@/components/common/message";
 import * as yup from "yup";
+import { error } from "console";
+
+interface FormErrors {
+    sku?: string;
+    name?: string;
+    descr?: string;
+    price?: string;
+}
+
 
 export const RegistrationOfProducts: React.FC = () => {
 
@@ -17,9 +26,10 @@ export const RegistrationOfProducts: React.FC = () => {
     const [price, setPrice] = useState<string | number>("");
     const [name, setName] = useState<string>("");
     const [descr, setDescr] = useState<string>("");
-    const [id, setId] = useState<string | undefined >("");
+    const [id, setId] = useState<string | undefined>("");
     const [created_at, setCreated_at] = useState<string | undefined>("");
-    const  [message, setMessage] = useState<Array<Alert>>([]);
+    const [message, setMessage] = useState<Array<Alert>>([]);
+    const [errors, setErrors] = useState<FormErrors>({});
 
 
     const validation = yup.object().shape({
@@ -43,37 +53,37 @@ export const RegistrationOfProducts: React.FC = () => {
             descr
         };
 
-        validation.validate(product).then( () => {
+        validation.validate(product).then(() => {
 
-            if(id){
-    
+            if (id) {
+
                 createProduct
-                .update(product)
-                .then(  product => {
-                    console.log(product);
-                    setMessage([{messageType: "is-success", message: "Produto atualizado com sucesso"}])
-    
-    
-                })
-    
-            }else{
-                
+                    .update(product)
+                    .then(product => {
+                        console.log(product);
+                        setMessage([{ messageType: "is-success", message: "Produto atualizado com sucesso" }])
+                        setErrors({})
+
+                    })
+
+            } else {
+
                 createProduct
-                .save(product)
-                .then(  product => {
-                    setId(product.id);
-                    setCreated_at(product.createdAt);
-                    console.log(product);
-                    setMessage([{messageType: "is-success", message: "Produto cadastrado com sucesso"}])
-                })
-    
+                    .save(product)
+                    .then(product => {
+                        setId(product.id);
+                        setCreated_at(product.createdAt);
+                        console.log(product);
+                        setMessage([{ messageType: "is-success", message: "Produto cadastrado com sucesso" }])
+                        setErrors({})
+                    })
+
             }
 
-        }).catch( err => {
+        }).catch(err => {
 
-            setMessage([{messageType: "is-danger", message: err.message.toString()}])
-
-        })    
+            setErrors({ ...errors, [err.path]: err.message })
+        })
 
 
 
@@ -81,7 +91,7 @@ export const RegistrationOfProducts: React.FC = () => {
 
 
     return (
-        <Layout title="Cadastro de Produtos"  message={message}>
+        <Layout title="Cadastro de Produtos" message={message}>
 
 
 
@@ -91,23 +101,24 @@ export const RegistrationOfProducts: React.FC = () => {
 
                     <div className="columns">
 
-                    <Input
-                        id="id"
-                        label="Código"
-                        value={id}
-                        classComponent="is-half"
-                        disabled={true}
-                    />
+                        <Input
+                            id="id"
+                            label="Código"
+                            value={id}
+                            classComponent="is-half"
+                            disabled={true}
+                        />
 
-                    <Input
-                        id="created_at"
-                        label="Data de Cadastro"
-                        value={created_at}
-                        classComponent="is-half"
-                        disabled={true}
 
-                    />
-                </div>
+                        <Input
+                            id="created_at"
+                            label="Data de Cadastro"
+                            value={created_at}
+                            classComponent="is-half"
+                            disabled={true}
+
+                        />
+                    </div>
                 }
 
                 <div className="columns">
@@ -121,7 +132,9 @@ export const RegistrationOfProducts: React.FC = () => {
                         classComponent="is-half"
                         maxLength={16}
                         currency={true}
+                        error={errors.price}
                     />
+
 
                     <Input
                         id="sku"
@@ -130,7 +143,8 @@ export const RegistrationOfProducts: React.FC = () => {
                         onChange={setSku}
                         placeholder="Digite o SKU do produto"
                         classComponent="is-half"
-
+                        maxLength={16}
+                        error={errors.sku}
                     />
                 </div>
 
@@ -143,6 +157,7 @@ export const RegistrationOfProducts: React.FC = () => {
                         onChange={setName}
                         placeholder="Digite o nome do produto"
                         classComponent="is-full"
+                        error={errors.name}
                     />
 
                 </div>
@@ -157,13 +172,16 @@ export const RegistrationOfProducts: React.FC = () => {
                         classComponent="is-full"
                     />
                 </div>
+                <p className="help is-danger" >
+                    {errors.descr}
+                </p>
 
                 <div className="field is-grouped">
                     <div className="control">
                         <button className="button is-success"
                         >
-                            { id ? "Atualizar" : "Cadastrar"}
-                            
+                            {id ? "Atualizar" : "Cadastrar"}
+
                         </button>
                     </div>
                     <div className="control">

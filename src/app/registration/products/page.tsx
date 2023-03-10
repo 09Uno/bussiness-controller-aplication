@@ -1,6 +1,5 @@
-'use client';
+'use client'
 
-import { RegistrationOfProducts } from "@/components/index";
+import {RegistrationOfProducts} from '@/components/index'
 
-
-export default RegistrationOfProducts;
+export default RegistrationOfProducts   

@@ -7,6 +7,8 @@ interface ILayoutProps {
     message?: Array<Alert>;
 }
 
+
+
 export const Layout: React.FC<ILayoutProps> = (props: ILayoutProps) => {
     return (
         <div className="app">
@@ -33,6 +35,8 @@ export const Layout: React.FC<ILayoutProps> = (props: ILayoutProps) => {
                             
                                 {props.children}
                             </div>
+                                
+
                         </div>
                     </div>
                 </div>

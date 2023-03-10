@@ -1,7 +1,7 @@
 
 //com este import é possivel importar o css do bulma para toda aplicação
 import 'bulma/css/bulma.css'
-
+import '@/components/common/loader/loader.css'
 
 
 export const metadata = {
