@@ -1,0 +1,41 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "BusinessApiApplication",
+            "request": "launch",
+            "mainClass": "br.com.codetoyou.businessapi.BusinessApiApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BusinessApiApplication<business-api>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "br.com.codetoyou.businessapi.BusinessApiApplication",
+            "projectName": "business-api",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiBusinessApplication<api-business>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "br.com.codetoyou.apibusiness.ApiBusinessApplication",
+            "projectName": "api-business",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BusinessApiApplication<business-api>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.codetoyou.businessapi.BusinessApiApplication",
+            "projectName": "business-api",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
