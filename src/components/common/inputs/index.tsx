@@ -1,5 +1,5 @@
 import { InputHTMLAttributes } from "react";
-import { formaTotReal  } from "@/app/utils/money";
+import { formaTotReal  } from "@/utils/money";
 
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

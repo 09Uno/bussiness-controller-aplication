@@ -1,5 +1,5 @@
 import { businessApi } from "../api/business_data/business_api";
-import { Product } from "@/app/models/products";
+import { Product } from "@/models/products";
 import { AxiosResponse } from "axios";
 
 const PRODUCTS_URL: string = "/api/products";
@@ -11,19 +11,31 @@ export const useProductsService = () => {
         const response :  AxiosResponse<Product> = await businessApi.post<Product>(PRODUCTS_URL, product);
         return response.data;
 
-
     }
 
     const update = async (product: Product): Promise<void> => {
 
         const url = `${PRODUCTS_URL}/${product.id}`;
-        await businessApi.put(url, product); 
+        await businessApi.put<Product>(url, product); 
     
 
     }
 
 
+    const get = async (id: number): Promise<Product> => {
+            
+            const url = `${PRODUCTS_URL}/${id}`;
+            const response: AxiosResponse<Product> = await businessApi.get<Product>(url);
+            return response.data;
+    }   
 
-    return { save, update };
+
+    const del = async (id: number): Promise<void> => {
+
+        const url = `${PRODUCTS_URL}/${id}`;
+        await businessApi.delete<Product>(url);
+    }
+
+    return { save, update, get, del };
 
 }

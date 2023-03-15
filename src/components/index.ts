@@ -1,8 +1,12 @@
 'use client'
+import 'bulma/css/bulma.css'
+import '@/components/common/loader/loader.css'
 
 export {RegistrationOfProducts} from "./products/registration/index";
 export {ListProduct} from './products/consultation/index';
 
+
+export {RegistrationOfClients} from "./clients/registration/index";
 
 export {Layout} from './layout/index';
 

@@ -17,14 +17,14 @@ export const Menu: React.FC = () => {
                 Minhas Vendas
             </p>
             <ul className="menu-list">
-                <MenuHome href="/" label="Home" />
-                <MenuHome href="/registration/products" label="Cadastrar Produtos" />
-                <MenuHome href="/consultation/products" label="Produtos Cadastrados" />
+                <MenuHome href="/" label="HOME" />
+                <MenuHome href="/registration/products/page" label="CADASTRAR PRODUTOS" />
+                <MenuHome href="/consultation/products/page" label="PRODUTOS CADASTRADOS" />
+                <MenuHome href="/registration/clients/page" label="CADASTRAR CLIENTES" />
                 
-
-                <MenuHome href="/sells" label="Vendas" />
+{/* 
                 <MenuHome href="/costumers" label="Clientes" />
-                <MenuHome href="/users" label="Usuários" />
+                <MenuHome href="/users" label="Usuários" /> */}
             </ul>
 
 

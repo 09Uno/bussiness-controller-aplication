@@ -3,8 +3,9 @@ export const convertToBigDecimal = (value: any): number => {
     if (!value) {
         return 0;
     }
-
-    return value.replace('.', '').replace(',', '.');
+    
+    var result  = value.replace('.', '').replace(',', '.');
+    return result
 
 }
 

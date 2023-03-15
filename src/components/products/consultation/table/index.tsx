@@ -1,7 +1,6 @@
 
-import { Product } from "@/app/models/products"
-import Router from "next/router"
-
+import { Product } from "@/models/products"
+import { useState } from "react"
 
 interface ProductsRowProps {
     product: Product
@@ -11,25 +10,13 @@ interface ProductsRowProps {
 
 interface ConsultProductProps {
     products: Array<Product>
+    onEdit: (product: Product) => void
+    onDelete: (product: Product) => void
 }
 
 
- const onEdit = (product: Product) => {
-    //  if (typeof window !== 'undefined') {
-    //      const url = `registration/products/?id=${product.id}` 
-    //     Router.push(url)
-    // }
+export const ConsultProduct: React.FC<ConsultProductProps> = ({ products, onEdit, onDelete }) => {
 
-    console.log('edit')
- }  
-  // Não funciona na versão 13.0.1 do NextJS porque está no server side, e não no client side (procurar uma solução)
-
-const onDelete = () => {
-    console.log('delete')
-}
-
-
-export const ConsultProduct: React.FC<ConsultProductProps> = ({ products }) => {
 
 
     return (
@@ -46,11 +33,10 @@ export const ConsultProduct: React.FC<ConsultProductProps> = ({ products }) => {
             </thead>
             <tbody>
 
-                {products ?
+                {
 
                     products.map((product, index) => <ProductsRow key={index} product={product} onEdit={onEdit} onDelete={onDelete} />)
-                    :
-                    <div></div>
+
                 }
 
             </tbody>
@@ -62,6 +48,22 @@ export const ConsultProduct: React.FC<ConsultProductProps> = ({ products }) => {
 
 
 const ProductsRow: React.FC<ProductsRowProps> = ({ product, onEdit, onDelete }) => {
+
+    const [isDelete, setIsDelete] = useState<boolean>(false)
+
+    const onDeleteClick = (product: Product) => {
+        if (isDelete) {
+            onDelete(product)
+            setIsDelete(false)
+        } else {
+            setIsDelete(true)
+        }
+    }
+
+    const cancelDelete = () => {
+        setIsDelete(false)
+    }
+
     return (
         <tr>
             <td>{product.id}</td>
@@ -70,8 +72,22 @@ const ProductsRow: React.FC<ProductsRowProps> = ({ product, onEdit, onDelete }) 
             <td>{product.sku}</td>
             <td>{product.createdAt}</td>
             <td>
-                <button onClick={e => onEdit(product)} className="button is-small is-primary">Editar</button>
-                <button onClick={e => onDelete(product)} className="button is-small is-danger">Excluir</button>
+
+                {!isDelete &&
+
+                    <div>
+                        <button onClick={e => onEdit(product)} className="button is-small is-primary">Editar</button>
+                        <button onClick={e => onDeleteClick(product)} className="button is-small is-danger">Excluir</button>
+                    </div>
+                }
+
+                {isDelete &&
+
+                    <div>
+                        <button onClick={e => onDelete(product)} className="button is-small is-danger">Confirmar</button>
+                        <button onClick={cancelDelete} className="button is-small is-success">Cancelar</button>
+                    </div>
+                }
 
             </td>
         </tr>

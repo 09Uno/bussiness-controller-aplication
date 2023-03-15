@@ -1,14 +1,14 @@
 'use client';
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Input, TextArea } from "../../index";
-import { Product } from "@/app/models/products";
+import { Product } from "@/models/products";
 import { useProductsService } from "@/app/services";
-import { convertToBigDecimal } from "@/app/utils/money";
+import { convertToBigDecimal } from "@/utils/money";
 import { Alert } from "@/components/common/message";
 import * as yup from "yup";
-import { error } from "console";
+import { useRouter } from "next/router";
 
 interface FormErrors {
     sku?: string;
@@ -22,14 +22,40 @@ export const RegistrationOfProducts: React.FC = () => {
 
 
     const createProduct = useProductsService();
-    const [sku, setSku] = useState<string>("");
-    const [price, setPrice] = useState<string | number>("");
-    const [name, setName] = useState<string>("");
-    const [descr, setDescr] = useState<string>("");
+    const [sku, setSku] = useState<string | undefined>("");
+    const [price, setPrice] = useState<string | number | undefined>("");
+    const [name, setName] = useState<string | undefined>("");
+    const [descr, setDescr] = useState<string | undefined>("");
     const [id, setId] = useState<string | undefined>("");
     const [created_at, setCreated_at] = useState<string | undefined>("");
     const [message, setMessage] = useState<Array<Alert>>([]);
     const [errors, setErrors] = useState<FormErrors>({});
+
+
+
+    const router = useRouter();
+    const { id: queryId } = router.query;
+    const idNumber = Number(queryId);
+
+
+    useEffect(() => {
+
+        if (queryId) {
+
+            createProduct
+                .get(idNumber)
+                .then(product => {
+                    setId(product.id);
+                    setSku(product.sku);
+                    setPrice(product.price);
+                    setName(product.name);
+                    setDescr(product.descr);
+                    setCreated_at(product.createdAt);
+                })
+        }
+
+
+    }, [queryId])
 
 
     const validation = yup.object().shape({
@@ -41,6 +67,18 @@ export const RegistrationOfProducts: React.FC = () => {
 
 
     })
+
+    const cleanFields = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.preventDefault();
+        setId("");
+        setSku("");
+        setPrice("");
+        setName("");
+        setDescr("");
+        setCreated_at("");
+        setErrors({});
+        setMessage([]);
+    }
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -63,7 +101,10 @@ export const RegistrationOfProducts: React.FC = () => {
                         console.log(product);
                         setMessage([{ messageType: "is-success", message: "Produto atualizado com sucesso" }])
                         setErrors({})
-
+                        setTimeout(() => {
+                            setMessage([])
+                        }
+                        , 3000)
                     })
 
             } else {
@@ -76,9 +117,15 @@ export const RegistrationOfProducts: React.FC = () => {
                         console.log(product);
                         setMessage([{ messageType: "is-success", message: "Produto cadastrado com sucesso" }])
                         setErrors({})
+                        setTimeout(() => {
+                            setMessage([])
+                        }
+                        , 3000)
                     })
 
             }
+
+
 
         }).catch(err => {
 
@@ -185,7 +232,7 @@ export const RegistrationOfProducts: React.FC = () => {
                         </button>
                     </div>
                     <div className="control">
-                        <button className="button is-warning">Voltar</button>
+                        <button onClick={cleanFields} className="button is-warning">Voltar</button>
                     </div>
                 </div>
             </form>
