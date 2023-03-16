@@ -1,29 +1,89 @@
 import { Layout } from "@/components/layout"
-import { Input, TextArea } from "@/components"
+import { Input } from "@/components"
 import { useState } from "react";
 import { Alert } from "@/components/common/message";
+import { useClientsService } from "@/app/services/index";
+import { Client } from "@/models/clients";
+
+
 
 export const RegistrationOfClients: React.FC = () => {
 
     const [id, setId] = useState<string | undefined>("");
-    const [created_at, setCreated_at] = useState<string | undefined>("");
+    const [createdAt, setCreatedAt] = useState<string | undefined>("");
     const [name, setName] = useState<string | undefined>("");
     const [cpf, setCpf] = useState<string | undefined>("");
     const [address, setAddress] = useState<string | undefined>("");
-    const [birtDay, setBirtDay] = useState<string | undefined>("");
+    const [birthDate, setBirthDate] = useState<string | undefined>("");
     const [email, setEmail] = useState<string | undefined>("");
     const [phone, setPhone] = useState<string | undefined>("");
 
     const [message, setMessage] = useState<Array<Alert>>([]);
 
+    const service = useClientsService();
+
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log("submit")
+
+        //como tem o mesmo nome da variavel, não precisa colocar o nome da variavel que a variavel recebe
+        const data : Client= {
+            id,
+            name,
+            cpf,
+            address,
+            birthDate,
+            email,
+            phone
+        }
+
+        if(id){
+
+            service.update(data).then(() => {
+                setMessage([{ messageType: "is-success", message: "Cliente atualizado com sucesso" }])
+            }
+            ).catch(() => {
+                setMessage([{ messageType: "is-danger", message: "Erro ao atualizar o cliente" }])
+            })
+            setTimeout(() => {
+                setMessage([])
+            }
+            , 3000)
+
+        }else{
+            service.save(data).then(client => {
+                setMessage([{ messageType: "is-success", message: "Cliente cadastrado com sucesso" }])
+                setId(client.id);
+                setCreatedAt(client.createdAt);
+
+            }
+            ).catch(() => {
+                setMessage([{ messageType: "is-danger", message: "Erro ao cadastrar o cliente" }])
+            })
+            setTimeout(() => {
+                setMessage([])
+            }
+            , 3000)
+        }
+
+    }
+
+    const cleanFields = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.preventDefault();
+        setId("");
+        setName("");
+        setCpf("");
+        setAddress("");
+        setBirthDate("");
+        setEmail("");
+        setPhone("");
+        setCreatedAt("");
+        setMessage([]);
     }
 
 
     return (
-        <Layout title="Cadastro de Clientes">
+        <Layout title="Cadastro de Clientes" message={message}>
             <form onSubmit={submit} >
                 {id &&
 
@@ -41,7 +101,7 @@ export const RegistrationOfClients: React.FC = () => {
                         <Input
                             id="created_at"
                             label="Data de Cadastro"
-                            value={created_at}
+                            value={createdAt}
                             classComponent="is-half"
                             disabled={true}
 
@@ -81,10 +141,10 @@ export const RegistrationOfClients: React.FC = () => {
 
 
                     <Input
-                        id="birtDay"
+                        id="birthDate"
                         label="Data de Nascimento *"
-                        value={birtDay}
-                        onChange={setBirtDay}
+                        value={birthDate}
+                        onChange={setBirthDate}
                         placeholder="Dia de Nascimento"
                         classComponent="is-half"
                         maxLength={11}
@@ -146,7 +206,8 @@ export const RegistrationOfClients: React.FC = () => {
                         </button>
                     </div>
                     <div className="control">
-                        <button className="button is-warning">Voltar</button>
+                        
+                    <button onClick={cleanFields} className="button is-warning">Voltar</button>
                     </div>
                 </div>
 

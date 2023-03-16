@@ -21,13 +21,13 @@ interface FormErrors {
 export const RegistrationOfProducts: React.FC = () => {
 
 
-    const createProduct = useProductsService();
+    const service = useProductsService();
     const [sku, setSku] = useState<string | undefined>("");
     const [price, setPrice] = useState<string | number | undefined>("");
     const [name, setName] = useState<string | undefined>("");
     const [descr, setDescr] = useState<string | undefined>("");
     const [id, setId] = useState<string | undefined>("");
-    const [created_at, setCreated_at] = useState<string | undefined>("");
+    const [created_at, setCreatedA] = useState<string | undefined>("");
     const [message, setMessage] = useState<Array<Alert>>([]);
     const [errors, setErrors] = useState<FormErrors>({});
 
@@ -42,7 +42,7 @@ export const RegistrationOfProducts: React.FC = () => {
 
         if (queryId) {
 
-            createProduct
+            service
                 .get(idNumber)
                 .then(product => {
                     setId(product.id);
@@ -50,7 +50,7 @@ export const RegistrationOfProducts: React.FC = () => {
                     setPrice(product.price);
                     setName(product.name);
                     setDescr(product.descr);
-                    setCreated_at(product.createdAt);
+                    setCreatedA(product.createdAt);
                 })
         }
 
@@ -75,7 +75,7 @@ export const RegistrationOfProducts: React.FC = () => {
         setPrice("");
         setName("");
         setDescr("");
-        setCreated_at("");
+        setCreatedA("");
         setErrors({});
         setMessage([]);
     }
@@ -95,7 +95,7 @@ export const RegistrationOfProducts: React.FC = () => {
 
             if (id) {
 
-                createProduct
+                service
                     .update(product)
                     .then(product => {
                         console.log(product);
@@ -109,11 +109,11 @@ export const RegistrationOfProducts: React.FC = () => {
 
             } else {
 
-                createProduct
+                service
                     .save(product)
                     .then(product => {
                         setId(product.id);
-                        setCreated_at(product.createdAt);
+                        setCreatedA(product.createdAt);
                         console.log(product);
                         setMessage([{ messageType: "is-success", message: "Produto cadastrado com sucesso" }])
                         setErrors({})
