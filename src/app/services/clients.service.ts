@@ -1,6 +1,8 @@
+import { number } from 'yup';
 import { businessApi } from "../api/business_data/business_api"
 import { Client } from "@/models/clients"
 import { AxiosResponse } from "axios"
+import { Page } from '@/models/common/page';
 
 const CLIENTS_URL: string = "/api/clients";
 
@@ -25,12 +27,23 @@ export const useClientsService = () => {
     }
     
     //get
-    const get = async(client: Client) : Promise<Client> => {
+    // const get = async(client: Client) : Promise<Client> => {
 
-        const url = `${CLIENTS_URL}/${client.id}`
-        const response : AxiosResponse<Client> = await businessApi.get<Client>(url)
-        return response.data;
+    //     const url = `${CLIENTS_URL}/${client.id}`
+    //     const response : AxiosResponse<Client> = await businessApi.get<Client>(url)
+    //     return response.data;
+    // }
+
+    const get = async (name: string ="", page: number=0, size: number=10) : Promise<Page<Client>> => {
+        const url = `${CLIENTS_URL}?=name${name}&page=${page}&size=${size}`
+
+        const response : AxiosResponse<Page<Client>> = await businessApi.get(url)
+
+        return response.data
+
+
     }
+    
 
     //delete
     const del = async (id: number) : Promise<void> => {

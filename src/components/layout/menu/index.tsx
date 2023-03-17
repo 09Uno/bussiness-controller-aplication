@@ -18,9 +18,11 @@ export const Menu: React.FC = () => {
             </p>
             <ul className="menu-list">
                 <MenuHome href="/" label="HOME" />
-                <MenuHome href="/registration/products/page" label="CADASTRAR PRODUTOS" />
-                <MenuHome href="/consultation/products/page" label="PRODUTOS CADASTRADOS" />
-                <MenuHome href="/registration/clients/page" label="CADASTRAR CLIENTES" />
+                <MenuHome href="/registration/products/page" label="Cadastrar Produtos" />
+                <MenuHome href="/consultation/products/page" label="Produtos" />
+                <MenuHome href="/registration/clients/page" label="Cadastrar Clientes" />
+                <MenuHome href="/consultation/clients/page" label="Clientes" />
+
                 
 {/* 
                 <MenuHome href="/costumers" label="Clientes" />

@@ -17,7 +17,7 @@ import { useEffect, useState } from "react"
 
 export const ListProduct: React.FC = () => {
 
-    const api = useProductsService()
+    const service = useProductsService()
     const [message, setMessage] = useState<Array<Alert>>([])
     const { data: result, error } = useSWR<AxiosResponse<Product[]>>('/api/products', url => businessApi.get(url))
 
@@ -39,7 +39,7 @@ export const ListProduct: React.FC = () => {
 
         var id = Number(product.id)
 
-        api.del(id).then(() => {
+        service.del(id).then(() => {
             
             setMessage([{messageType: 'primary', message: 'Produto excluído com sucesso'}])
             
