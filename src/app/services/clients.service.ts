@@ -26,23 +26,22 @@ export const useClientsService = () => {
         return response.data;
     }
     
-    //get
-    // const get = async(client: Client) : Promise<Client> => {
 
-    //     const url = `${CLIENTS_URL}/${client.id}`
-    //     const response : AxiosResponse<Client> = await businessApi.get<Client>(url)
-    //     return response.data;
-    // }
-
-    const get = async (name: string ="", page: number=0, size: number=10) : Promise<Page<Client>> => {
-        const url = `${CLIENTS_URL}?=name${name}&page=${page}&size=${size}`
-
+    //list
+    const get = async (name: string ="", page: number=0, rows: number=10) : Promise<Page<Client>> => {
+        const url = `${CLIENTS_URL}?name=${name}&page=${page}&size=${rows}`
         const response : AxiosResponse<Page<Client>> = await businessApi.get(url)
-
         return response.data
-
-
     }
+    
+    //get
+    
+    const getC = async (id: number): Promise<Client> => {
+            
+        const url = `${CLIENTS_URL}/${id}`;
+        const response: AxiosResponse<Client> = await businessApi.get<Client>(url);
+        return response.data;
+}   
     
 
     //delete
@@ -53,5 +52,5 @@ export const useClientsService = () => {
     }
 
 
-    return { save, update, get, del }
+    return { save, update, get, del , getC}
 }

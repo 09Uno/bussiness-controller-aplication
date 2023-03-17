@@ -1,9 +1,13 @@
+'use client';
+
+
 import { Layout } from "@/components/layout"
 import { Input } from "@/components"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "@/components/common/message";
 import { useClientsService } from "@/app/services/index";
 import { Client } from "@/models/clients";
+import {useRouter} from "next/router";
 
 
 
@@ -19,15 +23,41 @@ export const RegistrationOfClients: React.FC = () => {
     const [phone, setPhone] = useState<string | undefined>("");
 
     const [message, setMessage] = useState<Array<Alert>>([]);
-
+    
     const service = useClientsService();
+    
+    const router = useRouter();
+    const { id: queryId } = router.query;
+    const idNumber = Number(queryId);
+
+    useEffect(() => {
+
+        if (queryId) {
+
+            service
+                .getC(idNumber)
+                .then(client => {
+                    setId(client.id);
+                    setName(client.name);
+                    setCpf(client.cpf);
+                    setAddress(client.address);
+                    setBirthDate(client.birthDate);
+                    setEmail(client.email);
+                    setPhone(client.phone);
+                    setCreatedAt(client.createdAt);
+                })
+        }
+
+
+    }, [queryId])
+
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log("submit")
 
         //como tem o mesmo nome da variavel, não precisa colocar o nome da variavel que a variavel recebe
-        const data : Client= {
+        const data: Client = {
             id,
             name,
             cpf,
@@ -37,7 +67,7 @@ export const RegistrationOfClients: React.FC = () => {
             phone
         }
 
-        if(id){
+        if (id) {
 
             service.update(data).then(() => {
                 setMessage([{ messageType: "is-success", message: "Cliente atualizado com sucesso" }])
@@ -48,9 +78,9 @@ export const RegistrationOfClients: React.FC = () => {
             setTimeout(() => {
                 setMessage([])
             }
-            , 3000)
+                , 3000)
 
-        }else{
+        } else {
             service.save(data).then(client => {
                 setMessage([{ messageType: "is-success", message: "Cliente cadastrado com sucesso" }])
                 setId(client.id);
@@ -63,7 +93,7 @@ export const RegistrationOfClients: React.FC = () => {
             setTimeout(() => {
                 setMessage([])
             }
-            , 3000)
+                , 3000)
         }
 
     }
@@ -179,9 +209,9 @@ export const RegistrationOfClients: React.FC = () => {
                     // error={errors.name}
                     />
 
-            
 
-                
+
+
 
                     <Input
                         id="email"
@@ -206,8 +236,8 @@ export const RegistrationOfClients: React.FC = () => {
                         </button>
                     </div>
                     <div className="control">
-                        
-                    <button onClick={cleanFields} className="button is-warning">Voltar</button>
+
+                        <button onClick={cleanFields} className="button is-warning">Voltar</button>
                     </div>
                 </div>
 

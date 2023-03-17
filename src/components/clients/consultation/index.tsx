@@ -1,16 +1,19 @@
 import { Layout } from "@/components/layout"
 import { DataTable, DataTablePageEvent } from 'primereact/datatable';
+
+
+import { confirmDialog } from 'primereact/confirmdialog'; // For confirmDialog method
+        
+
 import { Column } from 'primereact/column';
-import useSWR from 'swr'
-import { AxiosResponse } from "axios";
 import { Client } from "@/models/clients";
-import { businessApi } from "@/app/api/business_data/business_api";
+import { Button } from 'primereact/button'
 import { useEffect, useState } from "react";
 import { Input } from "@/components/common/inputs";
 import { Alert } from "@/components/common/message";
 import { useClientsService } from "@/app/services";
 import { Page } from "@/models/common/page";
-import { Paginator } from "primereact/paginator";
+import Router from "next/router";
 
 interface ConsultClientsProps {
 
@@ -27,57 +30,72 @@ interface ConsultClientsProps {
 
 export const ConsultClients: React.FC<ConsultClientsProps> = () => {
 
-    const { data: result, error } = useSWR<AxiosResponse<Client[]>>('/api/clients', url => businessApi.get(url))
     const service = useClientsService();
     const [list, setList] = useState<Client[]>([])
     const [message, setMessage] = useState<Array<Alert>>([]);
-    const [client, setClient] = useState<string>('')
-    const [load , setLoad] = useState<boolean>(false)
+    const [clientName, setClientName] = useState<string>('')
+    const [load, setLoad] = useState<boolean>(false)
     const [page, setPage] = useState<Page<Client>>({
         content: [],
         first: 0,
         number: 0,
-        size: 10,
-        totalElements: 10,
+        size: 5,
+        totalElements: 0,
     })
 
 
-    useEffect(() => {
-        setList(result?.data || [])
-        // console.log(result?.data)
-    }, [result])
-
-
     const searchClient = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        handlePage({ first: 0, rows: 10 });
 
-        event.preventDefault()
-        const searchedList = list.filter(item => item.name?.includes(client))
-        console.log(client)
-        if (searchedList.length > 0) {
-            setList(searchedList)
-            console.log(searchedList)
-        } else {
-            setMessage([{ messageType: "is-danger", message: "Cliente não encontrado" }])
-
-            setTimeout(() => {
-                setMessage([])
-            }, 3000)
-
-        }
-
-    }
-
+    };
     const clearSearch = () => {
-        setList(result?.data || [])
-        setClient('')
+        setClientName('')
     }
+
+
 
 
     const handlePage = (event: DataTablePageEvent) => {
-        
-        service.get(client, event?.first, event?.rows).then((response => {
-            setPage(response)
-        }))
+        setLoad(true)
+        service.get(clientName, event?.page, event?.rows).then(response => {
+            console.log(response)
+            console.log(event.page)
+            setPage({ ...response, first: event?.first, size: event?.rows });
+        }).finally(() => { setLoad(false) })
+    };
+
+
+
+    const del = (client: Client) => {
+
+        const id = Number(client.id)
+
+        service.del(id).then(result => {
+
+            handlePage({ first: 0, rows: 10 });
+            setMessage([{ messageType: "is-success", message: "Registro Deletado com sucesso" }])
+        })
+        setTimeout(() => {
+            setMessage([])
+        }
+            , 3000)
+
+    }
+
+    const actionTemplate = (client: Client) => {
+        const url = `/registration/clients/page?id=${client.id}`
+        return (
+            <div>
+                <Button label="Editar"
+                    className="p-button-rounded p-button-info"
+                    onClick={e => Router.push(url)}
+                />
+                <Button label="Deletar" onClick={e => del(client)}
+                className="p-button-rounded p-button-danger"
+                />
+            </div>
+        )
     }
 
     return (
@@ -90,8 +108,8 @@ export const ConsultClients: React.FC<ConsultClientsProps> = () => {
                         classComponent="is-full"
                         autoComplete='off'
                         placeholder="Digite o nome do cliente"
-                        onChange={setClient}
-                        value={client}
+                        onChange={setClientName}
+                        value={clientName}
                     />
                     <button className="button is-success">Procurar</button>
                     <button className="button is-danger" onClick={clearSearch} >Limpar</button>
@@ -104,20 +122,28 @@ export const ConsultClients: React.FC<ConsultClientsProps> = () => {
                     <DataTable value={page.content}
                         paginator={true}
                         totalRecords={page.totalElements}
-                        lazy={true} 
+                        lazy={true}
                         onPage={handlePage}
                         rows={page.size}
                         first={page.first}
-                        tableStyle={{ minWidth: '50rem' }}>
+                        loading={load}
+                        rowsPerPageOptions={[10, 20, 50]}
+                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                        stripedRows
+                        size={"small"}
+                        emptyMessage="Nenhum registro"
 
-                        <Column field={"id"} header={"Chave"} />
-                        <Column field={"createdAt"} header={"Cadastro"} />
-                        <Column field={"cpf"} header={"CPF"} />
-                        <Column field={"birthDate"} header={"Nascimento"} />
-                        <Column field={"name"} header={"Nome"} />
-                        <Column field={"address"} header={"Endereço"} />
-                        <Column field={"email"} header={"E-mail"} />
-                        <Column field={"phone"} header={"Telefone"} />
+                    >
+
+                        <Column field={"id"} header={"Chave"} style={{ whiteSpace: 'nowrap' }} />
+                        <Column field={"createdAt"} header={"Cadastro"} style={{ whiteSpace: 'nowrap' }} />
+                        <Column field={"cpf"} header={"CPF"} style={{ whiteSpace: 'nowrap' }} />
+                        <Column field={"birthDate"} header={"Nascimento"} style={{ whiteSpace: 'nowrap' }} />
+                        <Column field={"name"} header={"Nome"} style={{ whiteSpace: 'nowrap' }} />
+                        <Column field={"address"} header={"Endereço"} style={{ whiteSpace: 'nowrap' }} />
+                        <Column field={"email"} header={"E-mail"} style={{ whiteSpace: 'nowrap' }} />
+                        <Column field={"phone"} header={"Telefone"} style={{ whiteSpace: 'nowrap' }} />
+                        <Column body={actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
 
                     </DataTable>
                 </div>
