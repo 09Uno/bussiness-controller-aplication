@@ -12,17 +12,12 @@ import { Alert } from "@/components/common/message"
 import { useEffect, useState } from "react"
 
 
-
-
-
 export const ListProduct: React.FC = () => {
 
     const service = useProductsService()
     const [message, setMessage] = useState<Array<Alert>>([])
     const { data: result, error } = useSWR<AxiosResponse<Product[]>>('/api/products', url => businessApi.get(url))
-
     const [list, setList] = useState<Product[]>([])
-
 
     useEffect (() => {  
         setList(result?.data || [])
@@ -34,37 +29,26 @@ export const ListProduct: React.FC = () => {
         
     }
     // Não funciona na versão 13.0.1 do NextJS porque está no server side, e não no client side (procurar uma solução)
-
     const onDelete = (product: Product) => {
-
         var id = Number(product.id)
-
-        service.del(id).then(() => {
-            
+        service.del(id).then(() => {     
             setMessage([{messageType: 'is-success', message: 'Produto excluído com sucesso'}])
-            
             const newList = list.filter(item => item.id !== product.id)
             setList(newList)
-
             setTimeout(() => {
                 setMessage([])
             }
             , 3000)
         })
-
     }
-
-
 
     if (error) {
         return <div>Erro ao carregar</div>
     }
-
     return (
         <Layout title="Produtos Cadastrados" message={message} >
             <ConsultProduct products={result?.data || []} onEdit={onEdit} onDelete={onDelete}/>
             <Loader isLoading={!result} />
-
         </Layout>
     )
 }

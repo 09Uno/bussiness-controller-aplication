@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Layout, Input, TextArea } from "../../index";
 import { Product } from "@/models/products";
 import { useProductsService } from "@/app/services";
-import { convertToBigDecimal } from "@/utils/money";
+import { convertToBigDecimal } from "@/utils/masks";
 import { Alert } from "@/components/common/message";
 import * as yup from "yup";
 import { useRouter } from "next/router";
@@ -30,18 +30,13 @@ export const RegistrationOfProducts: React.FC = () => {
     const [created_at, setCreatedA] = useState<string | undefined>("");
     const [message, setMessage] = useState<Array<Alert>>([]);
     const [errors, setErrors] = useState<FormErrors>({});
-
-
-
+    
     const router = useRouter();
     const { id: queryId } = router.query;
     const idNumber = Number(queryId);
 
-
     useEffect(() => {
-
         if (queryId) {
-
             service
                 .get(idNumber)
                 .then(product => {
@@ -53,32 +48,16 @@ export const RegistrationOfProducts: React.FC = () => {
                     setCreatedA(product.createdAt);
                 })
         }
-
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [queryId])
 
 
     const validation = yup.object().shape({
-
         descr: yup.string().trim().required("Descrição é obrigatório"),
         name: yup.string().trim().required("Nome é obrigatório"),
         sku: yup.string().trim().required("SKU é obrigatório"),
         price: yup.number().required("Preço é obrigatório").moreThan(0, "Preço deve ser maior que zero")
-
-
     })
-
-    const cleanFields = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        event.preventDefault();
-        setId("");
-        setSku("");
-        setPrice("");
-        setName("");
-        setDescr("");
-        setCreatedA("");
-        setErrors({});
-        setMessage([]);
-    }
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -92,62 +71,55 @@ export const RegistrationOfProducts: React.FC = () => {
         };
 
         validation.validate(product).then(() => {
-
             if (id) {
-
                 service
-                    .update(product)
-                    .then(product => {
-                        console.log(product);
-                        setMessage([{ messageType: "is-success", message: "Produto atualizado com sucesso" }])
-                        setErrors({})
-                        setTimeout(() => {
-                            setMessage([])
-                        }
-                        , 3000)
-                    })
-
+                .update(product)
+                .then(product => {
+                    console.log(product);
+                    setMessage([{ messageType: "is-success", message: "Produto atualizado com sucesso" }])
+                    setErrors({})
+                    setTimeout(() => {
+                        setMessage([])
+                    }
+                    , 3000)
+                })
             } else {
-
                 service
-                    .save(product)
-                    .then(product => {
-                        setId(product.id);
-                        setCreatedA(product.createdAt);
-                        console.log(product);
-                        setMessage([{ messageType: "is-success", message: "Produto cadastrado com sucesso" }])
+                .save(product)
+                .then(product => {
+                    setId(product.id);
+                    setCreatedA(product.createdAt);
+                    console.log(product);
+                    setMessage([{ messageType: "is-success", message: "Produto cadastrado com sucesso" }])
                         setErrors({})
                         setTimeout(() => {
                             setMessage([])
                         }
                         , 3000)
                     })
-
             }
-
-
-
         }).catch(err => {
-
             setErrors({ ...errors, [err.path]: err.message })
         })
-
-
-
     }
-
-
+    
+    const cleanFields = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.preventDefault();
+        setId("");
+        setSku("");
+        setPrice("");
+        setName("");
+        setDescr("");
+        setCreatedA("");
+        setErrors({});
+        setMessage([]);
+    }
+    
     return (
         <Layout title="Cadastro de Produtos" message={message}>
-
-
-
             <form onSubmit={submit}>
-
                 {id &&
-
                     <div className="columns">
-
                         <Input
                             id="id"
                             label="Código"
@@ -156,20 +128,17 @@ export const RegistrationOfProducts: React.FC = () => {
                             disabled={true}
                         />
 
-
                         <Input
                             id="created_at"
                             label="Data de Cadastro"
                             value={created_at}
                             classComponent="is-half"
                             disabled={true}
-
                         />
                     </div>
                 }
 
                 <div className="columns">
-
                     <Input
                         id="price"
                         label="Preço *"
@@ -178,10 +147,8 @@ export const RegistrationOfProducts: React.FC = () => {
                         placeholder="Digite o preço do produto"
                         classComponent="is-half"
                         maxLength={16}
-                        currency={true}
                         error={errors.price}
                     />
-
 
                     <Input
                         id="sku"
@@ -196,7 +163,6 @@ export const RegistrationOfProducts: React.FC = () => {
                 </div>
 
                 <div className="columns">
-
                     <Input
                         id="product"
                         label="Produto *"
@@ -206,7 +172,6 @@ export const RegistrationOfProducts: React.FC = () => {
                         classComponent="is-full"
                         error={errors.name}
                     />
-
                 </div>
 
                 <div className="columns">
@@ -219,16 +184,15 @@ export const RegistrationOfProducts: React.FC = () => {
                         classComponent="is-full"
                     />
                 </div>
+
                 <p className="help is-danger" >
                     {errors.descr}
                 </p>
 
                 <div className="field is-grouped">
                     <div className="control">
-                        <button className="button is-success"
-                        >
+                        <button className="button is-success">
                             {id ? "Atualizar" : "Cadastrar"}
-
                         </button>
                     </div>
                     <div className="control">

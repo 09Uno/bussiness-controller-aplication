@@ -7,7 +7,10 @@ import { useEffect, useState } from "react";
 import { Alert } from "@/components/common/message";
 import { useClientsService } from "@/app/services/index";
 import { Client } from "@/models/clients";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
+import { maskType } from "@/utils/masks";
+import * as yup from "yup";
+
 
 
 
@@ -21,20 +24,18 @@ export const RegistrationOfClients: React.FC = () => {
     const [address, setAddress] = useState<string | undefined>("");
     const [birthDate, setBirthDate] = useState<string | undefined>("");
     const [email, setEmail] = useState<string | undefined>("");
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [phone, setPhone] = useState<string | undefined>("");
-
     const [message, setMessage] = useState<Array<Alert>>([]);
-    
+
     const service = useClientsService();
-    
+
     const router = useRouter();
     const { id: queryId } = router.query;
     const idNumber = Number(queryId);
 
     useEffect(() => {
-
         if (queryId) {
-
             service
                 .getC(idNumber)
                 .then(client => {
@@ -48,16 +49,13 @@ export const RegistrationOfClients: React.FC = () => {
                     setCreatedAt(client.createdAt);
                 })
         }
-
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [queryId])
-
 
     const submit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log("submit")
-
-        //como tem o mesmo nome da variavel, não precisa colocar o nome da variavel que a variavel recebe
+        //como tem o mesmo nome da variável, não precisa colocar o nome da variável que a variável recebe
         const data: Client = {
             id,
             name,
@@ -68,35 +66,39 @@ export const RegistrationOfClients: React.FC = () => {
             phone
         }
 
-        if (id) {
-
-            service.update(data).then(() => {
-                setMessage([{ messageType: "is-success", message: "Cliente atualizado com sucesso" }])
+        const validation = yup.object().shape({
+            cpf: yup.string().trim().required("CPF é obrigatório"),
+            name: yup.string().trim().required("Nome é obrigatório"),
+        })
+        validation.validate(data).then(() => {
+            if (id) {
+                service.update(data).then(() => {
+                    setMessage([{ messageType: "is-success", message: "Cliente atualizado com sucesso" }])
+                }
+                ).catch(() => {
+                    setMessage([{ messageType: "is-danger", message: "Erro ao atualizar o cliente" }])
+                })
+                setTimeout(() => {
+                    setMessage([])
+                }
+                    , 3000)
+            } else {
+                service.save(data).then(client => {
+                    setMessage([{ messageType: "is-success", message: "Cliente cadastrado com sucesso" }])
+                    setId(client.id);
+                    setCreatedAt(client.createdAt);
+                }
+                ).catch(() => {
+                    setMessage([{ messageType: "is-danger", message: "Erro ao cadastrar o cliente" }])
+                })
+                setTimeout(() => {
+                    setMessage([])
+                }
+                    , 3000)
             }
-            ).catch(() => {
-                setMessage([{ messageType: "is-danger", message: "Erro ao atualizar o cliente" }])
-            })
-            setTimeout(() => {
-                setMessage([])
-            }
-                , 3000)
-
-        } else {
-            service.save(data).then(client => {
-                setMessage([{ messageType: "is-success", message: "Cliente cadastrado com sucesso" }])
-                setId(client.id);
-                setCreatedAt(client.createdAt);
-
-            }
-            ).catch(() => {
-                setMessage([{ messageType: "is-danger", message: "Erro ao cadastrar o cliente" }])
-            })
-            setTimeout(() => {
-                setMessage([])
-            }
-                , 3000)
-        }
-
+        }).catch(err => {
+            setErrors({ ...errors, [err.path]: err.message })
+        })
     }
 
     const cleanFields = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -112,14 +114,11 @@ export const RegistrationOfClients: React.FC = () => {
         setMessage([]);
     }
 
-
     return (
         <Layout title="Cadastro de Clientes" message={message}>
             <form onSubmit={submit} >
                 {id &&
-
                     <div className="columns">
-
                         <Input
                             id="id"
                             label="Código"
@@ -128,21 +127,18 @@ export const RegistrationOfClients: React.FC = () => {
                             disabled={true}
                         />
 
-
                         <Input
                             id="created_at"
                             label="Data de Cadastro"
                             value={createdAt}
                             classComponent="is-half"
                             disabled={true}
-
                         />
                     </div>
                 }
 
 
                 <div className="columns">
-
                     <Input
                         id="name"
                         label="Nome do Cliente *"
@@ -150,40 +146,40 @@ export const RegistrationOfClients: React.FC = () => {
                         onChange={setName}
                         placeholder="Digite o nome do cliente"
                         classComponent="is-full"
-                    // error={errors.name}
+                        error={errors.name}
                     />
-
                 </div>
 
-
                 <div className="columns">
-
                     <Input
                         id="cpf"
                         label="CPF *"
                         value={cpf}
-                        onChange={setCpf}
-                        placeholder="Digite o preço do produto"
+                        onChange={(value: string) => {
+                            const formattedValue = maskType(value, "cpf");
+                            setCpf(formattedValue);
+                        }}
+                        placeholder="Digite seu CPF"
                         classComponent="is-half"
-                        maxLength={11}
-                        currency={true}
+                        maxLength={14}
+                        error={errors.cpf}
                     />
-
 
                     <Input
                         id="birthDate"
                         label="Data de Nascimento *"
                         value={birthDate}
-                        onChange={setBirthDate}
+                        onChange={(value: string) => {
+                            const formattedValue = maskType(value, "date");
+                            setBirthDate(formattedValue);
+                        }}
                         placeholder="Dia de Nascimento"
                         classComponent="is-half"
-                        maxLength={11}
+                        maxLength={10}
                     />
                 </div>
 
-
                 <div className="columns">
-
                     <Input
                         id="address"
                         label="Endereço do Cliente "
@@ -192,23 +188,21 @@ export const RegistrationOfClients: React.FC = () => {
                         placeholder="Digite o endereço"
                         classComponent="is-full"
                     />
-
                 </div>
 
                 <div className="columns">
-
                     <Input
                         id="phone"
                         label="Telefone do Cliente "
                         value={phone}
-                        onChange={setPhone}
+                        onChange={(value: string) => {
+                            const formattedValue = maskType(value, "phone");
+                            setPhone(formattedValue);
+                        }
+                        }
                         placeholder="Digite o telefone do cliente"
                         classComponent="is-half"
                     />
-
-
-
-
 
                     <Input
                         id="email"
@@ -218,27 +212,19 @@ export const RegistrationOfClients: React.FC = () => {
                         placeholder="Digite o email do cliente"
                         classComponent="is-full"
                     />
-
                 </div>
-
-
 
                 <div className="field is-grouped">
                     <div className="control">
-                        <button className="button is-success"
-                        >
+                        <button className="button is-success">
                             {id ? "Atualizar" : "Cadastrar"}
-
                         </button>
                     </div>
                     <div className="control">
-
                         <button onClick={cleanFields} className="button is-warning">Voltar</button>
                     </div>
                 </div>
-
             </form>
-
         </Layout>
     )
 
