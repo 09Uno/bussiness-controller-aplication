@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import  logo  from "@/images/business-chart.png" 
 
 //interface para os itens do menu lateral esquerdo da aplicação
 interface IMenuProps {
@@ -13,9 +15,9 @@ export const Menu: React.FC = () => {
 
         //menu lateral esquerdo da aplicação
         <aside className="menu is-2 is-narrow-mobile is-fullHeight section is-hidden-mobile " >
-            <p className="menu-label is-hidden-touch">
-                Minhas Vendas
-            </p>
+            <div className="menu-label is-hidden-touch">
+                <Image src={logo} width={200} height={200} alt="Business chart" />
+            </div>
             <ul className="menu-list">
                 <MenuHome href="/" label="HOME" />
                 <MenuHome href="/registration/products/page" label="Cadastrar Produtos" />
@@ -23,8 +25,8 @@ export const Menu: React.FC = () => {
                 <MenuHome href="/registration/clients/page" label="Cadastrar Clientes" />
                 <MenuHome href="/consultation/clients/page" label="Clientes" />
 
-                
-{/* 
+
+                {/* 
                 <MenuHome href="/costumers" label="Clientes" />
                 <MenuHome href="/users" label="Usuários" /> */}
             </ul>

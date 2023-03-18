@@ -3,7 +3,7 @@ import { DataTable, DataTablePageEvent } from 'primereact/datatable';
 
 
 import { confirmDialog } from 'primereact/confirmdialog'; // For confirmDialog method
-        
+
 
 import { Column } from 'primereact/column';
 import { Client } from "@/models/clients";
@@ -14,6 +14,13 @@ import { Alert } from "@/components/common/message";
 import { useClientsService } from "@/app/services";
 import { Page } from "@/models/common/page";
 import Router from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
+import { faPenToSquare, } from '@fortawesome/free-regular-svg-icons';
+
+import { ConfirmPopup } from 'primereact/confirmpopup'; // To use <ConfirmPopup> tag
+import { confirmPopup } from 'primereact/confirmpopup'; // To use confirmPopup method
+
 
 interface ConsultClientsProps {
 
@@ -31,7 +38,6 @@ interface ConsultClientsProps {
 export const ConsultClients: React.FC<ConsultClientsProps> = () => {
 
     const service = useClientsService();
-    const [list, setList] = useState<Client[]>([])
     const [message, setMessage] = useState<Array<Alert>>([]);
     const [clientName, setClientName] = useState<string>('')
     const [load, setLoad] = useState<boolean>(false)
@@ -43,6 +49,9 @@ export const ConsultClients: React.FC<ConsultClientsProps> = () => {
         totalElements: 0,
     })
 
+    useEffect(() => {
+        handlePage({ first: 0, rows: 10 });
+    }, [])
 
     const searchClient = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -83,17 +92,40 @@ export const ConsultClients: React.FC<ConsultClientsProps> = () => {
 
     }
 
+    const deleteClient = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, client: Client) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: 'Tem certeza que deseja deletar?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => del(client),
+            reject: () => { }
+        });
+    };
+
+
+
     const actionTemplate = (client: Client) => {
         const url = `/registration/clients/page?id=${client.id}`
         return (
             <div>
-                <Button label="Editar"
-                    className="p-button-rounded p-button-info"
+                <ConfirmPopup />
+
+                <button
+                    className="button is-big is-success "
                     onClick={e => Router.push(url)}
-                />
-                <Button label="Deletar" onClick={e => del(client)}
-                className="p-button-rounded p-button-danger"
-                />
+                >
+                    <FontAwesomeIcon icon={faPenToSquare} />
+                </button>
+
+                <button className="button is-big is-danger " onClick={e => {
+                    e.preventDefault();
+                    deleteClient(e, client);
+                }}
+                >
+
+                    <FontAwesomeIcon icon={faTrashAlt} />
+
+                </button>
             </div>
         )
     }
@@ -132,18 +164,19 @@ export const ConsultClients: React.FC<ConsultClientsProps> = () => {
                         stripedRows
                         size={"small"}
                         emptyMessage="Nenhum registro"
+                        style={{ width: '70vw' }}
 
                     >
 
-                        <Column field={"id"} header={"Chave"} style={{ whiteSpace: 'nowrap' }} />
-                        <Column field={"createdAt"} header={"Cadastro"} style={{ whiteSpace: 'nowrap' }} />
-                        <Column field={"cpf"} header={"CPF"} style={{ whiteSpace: 'nowrap' }} />
-                        <Column field={"birthDate"} header={"Nascimento"} style={{ whiteSpace: 'nowrap' }} />
-                        <Column field={"name"} header={"Nome"} style={{ whiteSpace: 'nowrap' }} />
-                        <Column field={"address"} header={"Endereço"} style={{ whiteSpace: 'nowrap' }} />
-                        <Column field={"email"} header={"E-mail"} style={{ whiteSpace: 'nowrap' }} />
-                        <Column field={"phone"} header={"Telefone"} style={{ whiteSpace: 'nowrap' }} />
-                        <Column body={actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
+                        <Column field={"id"} header={"Chave"}  />
+                        <Column field={"createdAt"} header={"Cadastro"}  />
+                        <Column field={"cpf"} header={"CPF"}  />
+                        <Column field={"birthDate"} header={"Nascimento"}  />
+                        <Column field={"name"} header={"Nome"}  />
+                        <Column field={"address"} header={"Endereço"}  />
+                        <Column field={"email"} header={"E-mail"}  />
+                        <Column field={"phone"} header={"Telefone"}  />
+                        <Column body={actionTemplate} />
 
                     </DataTable>
                 </div>

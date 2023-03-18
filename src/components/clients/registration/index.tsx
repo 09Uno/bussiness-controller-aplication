@@ -11,6 +11,7 @@ import {useRouter} from "next/router";
 
 
 
+
 export const RegistrationOfClients: React.FC = () => {
 
     const [id, setId] = useState<string | undefined>("");
@@ -166,7 +167,6 @@ export const RegistrationOfClients: React.FC = () => {
                         classComponent="is-half"
                         maxLength={11}
                         currency={true}
-                    // error={errors.price}
                     />
 
 
@@ -178,7 +178,6 @@ export const RegistrationOfClients: React.FC = () => {
                         placeholder="Dia de Nascimento"
                         classComponent="is-half"
                         maxLength={11}
-                    // error={errors.sku}
                     />
                 </div>
 
@@ -192,7 +191,6 @@ export const RegistrationOfClients: React.FC = () => {
                         onChange={setAddress}
                         placeholder="Digite o endereço"
                         classComponent="is-full"
-                    // error={errors.name}
                     />
 
                 </div>
@@ -206,7 +204,6 @@ export const RegistrationOfClients: React.FC = () => {
                         onChange={setPhone}
                         placeholder="Digite o telefone do cliente"
                         classComponent="is-half"
-                    // error={errors.name}
                     />
 
 
@@ -220,7 +217,6 @@ export const RegistrationOfClients: React.FC = () => {
                         onChange={setEmail}
                         placeholder="Digite o email do cliente"
                         classComponent="is-full"
-                    // error={errors.name}
                     />
 
                 </div>

@@ -41,7 +41,7 @@ export const ListProduct: React.FC = () => {
 
         service.del(id).then(() => {
             
-            setMessage([{messageType: 'primary', message: 'Produto excluído com sucesso'}])
+            setMessage([{messageType: 'is-success', message: 'Produto excluído com sucesso'}])
             
             const newList = list.filter(item => item.id !== product.id)
             setList(newList)

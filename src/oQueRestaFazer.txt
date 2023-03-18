@@ -1,6 +1,4 @@
-Fazer validations dos inputs na página clients;
 Fazer Mascaras para os campos;
-Reestilizar os components;
-Tentar arrumar a listagem de produtos para o modelo que está sendo usado em outros métodos
+Fazer validations dos inputs na página clients;
 Arrumar bugs e deixar código mais limpo
-deixar o visual mais bonito
+criar componente para os dialogs

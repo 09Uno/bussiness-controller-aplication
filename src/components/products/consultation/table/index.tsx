@@ -1,12 +1,16 @@
 
 import { Product } from "@/models/products"
-import { useState } from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPenToSquare, } from '@fortawesome/free-regular-svg-icons';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
-interface ProductsRowProps {
-    product: Product
-    onEdit: (product: Product) => void
-    onDelete: (product: Product) => void
-}
+
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { confirmPopup, ConfirmPopup } from "primereact/confirmpopup";
+import Router from "next/router";
+import { Client } from "@/models/clients";
+
 
 interface ConsultProductProps {
     products: Array<Product>
@@ -18,78 +22,77 @@ interface ConsultProductProps {
 export const ConsultProduct: React.FC<ConsultProductProps> = ({ products, onEdit, onDelete }) => {
 
 
+    
+    
+    const deleteProduct = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, client: Client) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: 'Tem certeza que deseja deletar?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {onDelete(client)
+                
+            },
+            reject: () => { }
+        });
+    };
+
+    
+
+    const actionTemplate = (product: Product) => {
+        const url = `/registration/products/page?id=${product.id}`;
+        return (
+            <div>
+
+                <ConfirmPopup />
+                <button
+                    className="button is-big is-success"
+                    onClick={e => Router.push(url)}
+                >
+                    <FontAwesomeIcon icon={faPenToSquare} />
+                </button>
+
+                <button
+                    className="button is-big is-danger"
+                    onClick={e => {
+                        deleteProduct(e, product);
+                    }}
+                >
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                </button>
+            </div>
+        );
+    };
+
 
     return (
-        <table className="table is-fullwidth is-hoverable">
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Nome</th>
-                    <th>Preço</th>
-                    <th>SKU</th>
-                    <th>Data de Cadastro</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
+        <div className="columns">
+            <div className="is-full">
+                <DataTable
+                    value={products}
+                    paginator={true}
+                    first={0}
+                    rowsPerPageOptions={[10, 20, 50]}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    stripedRows
+                    size={"small"}
+                    emptyMessage="Nenhum registro"
+                    rows={10}
+                    onChange={e => console.log(e)}
+                    style={{ width: '70vw' }}
 
-                {
+                >
+                    <Column field="id" header="Código" />
+                    <Column field="name" header="Nome" />
+                    <Column field="price" header="Preço" />
+                    <Column field="sku" header="SKU" />
+                    <Column field="createdAt" header="Data de Cadastro" />
+                    <Column body={actionTemplate} header="Ações" />
+                </DataTable>
 
-                    products.map((product, index) => <ProductsRow key={index} product={product} onEdit={onEdit} onDelete={onDelete} />)
+            </div>
+        </div>
 
-                }
-
-            </tbody>
-
-
-        </table>
     )
 }
 
 
-const ProductsRow: React.FC<ProductsRowProps> = ({ product, onEdit, onDelete }) => {
-
-    const [isDelete, setIsDelete] = useState<boolean>(false)
-
-    const onDeleteClick = (product: Product) => {
-        if (isDelete) {
-            onDelete(product)
-            setIsDelete(false)
-        } else {
-            setIsDelete(true)
-        }
-    }
-
-    const cancelDelete = () => {
-        setIsDelete(false)
-    }
-
-    return (
-        <tr>
-            <td>{product.id}</td>
-            <td>{product.name}</td>
-            <td>{product.price}</td>
-            <td>{product.sku}</td>
-            <td>{product.createdAt}</td>
-            <td>
-
-                {!isDelete &&
-
-                    <div>
-                        <button onClick={e => onEdit(product)} className="button is-small is-primary">Editar</button>
-                        <button onClick={e => onDeleteClick(product)} className="button is-small is-danger">Excluir</button>
-                    </div>
-                }
-
-                {isDelete &&
-
-                    <div>
-                        <button onClick={e => onDelete(product)} className="button is-small is-danger">Confirmar</button>
-                        <button onClick={cancelDelete} className="button is-small is-success">Cancelar</button>
-                    </div>
-                }
-
-            </td>
-        </tr>
-    )
-}
