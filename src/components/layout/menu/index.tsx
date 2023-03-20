@@ -24,7 +24,8 @@ export const Menu: React.FC = () => {
                 <MenuHome href="/consultation/products/page" label="Produtos" />
                 <MenuHome href="/registration/clients/page" label="Cadastrar Clientes" />
                 <MenuHome href="/consultation/clients/page" label="Clientes" />
-
+                <MenuHome href="/sells/page" label="Vendas" />
+                
 
                 {/* 
                 <MenuHome href="/costumers" label="Clientes" />

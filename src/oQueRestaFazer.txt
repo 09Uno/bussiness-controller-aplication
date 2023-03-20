@@ -1,4 +1,4 @@
-Fazer Mascaras para os campos;
-Fazer validations dos inputs na página clients;
+
 Arrumar bugs e deixar código mais limpo
 criar componente para os dialogs
+explorar as opções de tema do primereact

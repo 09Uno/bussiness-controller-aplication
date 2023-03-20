@@ -1,7 +1,10 @@
 'use client'
+
+
 import 'bulma/css/bulma.css'
 import '@/components/common/loader/loader.css'
-
+import 'primeflex/primeflex.css';
+        
 
 //theme
 import "primereact/resources/themes/lara-light-indigo/theme.css";     
@@ -14,13 +17,16 @@ import "primeicons/primeicons.css";
         
 
 
-
+//products
 export {RegistrationOfProducts} from "./products/registration/index";
 export {ListProduct} from './products/consultation/index';
 
-
+//CLients
 export {RegistrationOfClients} from "./clients/registration/index";
 export {ConsultClients} from "./clients/consultation/index"
+
+//Sells
+export {Sells} from "./sells/index"
 
 export {Layout} from './layout/index';
 
