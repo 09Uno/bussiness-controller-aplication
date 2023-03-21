@@ -4,6 +4,8 @@
 import 'bulma/css/bulma.css'
 import '@/components/common/loader/loader.css'
 import 'primeflex/primeflex.css';
+
+
         
 
 //theme

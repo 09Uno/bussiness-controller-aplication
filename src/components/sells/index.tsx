@@ -18,7 +18,6 @@ export const Sells: React.FC = () => {
 
         </Layout>
 
-
     )
 }
 

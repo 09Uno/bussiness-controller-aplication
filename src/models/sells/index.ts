@@ -2,8 +2,14 @@ import { Client } from "@/models/clients";
 import { Product } from "@/models/products";
 
 export interface Sell{
-    client: Client
-    products: Array<Product>
-    paymentMethod: string
-    total: number
+    client?: Client
+    item?: Array<ItemSell>
+    paymentMethod?: string
+    total?: number
+}
+
+
+export interface ItemSell{
+    product: Product | null
+    quantity: number | null
 }
