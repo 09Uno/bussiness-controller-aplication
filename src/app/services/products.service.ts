@@ -36,6 +36,14 @@ export const useProductsService = () => {
         await businessApi.delete<Product>(url);
     }
 
-    return { save, update, get, del };
+    const list = async () : Promise<Product[]> =>{
+
+        const response : AxiosResponse<Product[]> = await businessApi.get(PRODUCTS_URL)
+
+        return response.data
+
+    }
+
+    return { save, update, get, del, list };
 
 }
