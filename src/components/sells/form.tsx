@@ -40,14 +40,14 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit }) => {
     const [filteredProducts, setFilteredProducts] = useState<Array<Product>>([])
 
 
-    const paymentMethod: string[] = ["Dinheiro", "Cartão de Crédito", "Cartão de Débito", "Cheque", "Boleto"]
+    const paymentMethod: string[] = ["Dinheiro", "Cartao", "Pix", "Boleto"]
     const [payment, setPayment] = useState<string>('')
 
     const [total, setTotal] = useState<number>(0)
 
     const [message, setMessage] = useState<string>('')
 
-    const [client, setClient] = useState<Client[] | null>(null)
+    const [client, setClient] = useState<Client[] | undefined>([])
     const [clients, setClients] = useState<Page<Client>>({
         content: [],
         first: 0,
@@ -60,10 +60,21 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit }) => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        const productAdded: Array<ItemSell> | undefined = productsAdded
         // console.log(client)
         setProduct(null)
         setProductId('')
+        onSubmit({
+            client:  client ,
+            paymentMethod: payment,
+            item: productAdded,
+            total: sumTotal()
+        })
+
     }
+
+
+
 
     const handleAutoComplete = (event: AutoCompleteCompleteEvent) => {
         let name = event.query
