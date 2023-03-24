@@ -8,20 +8,26 @@ import { Alert } from "../common/message";
 export const Sells: React.FC = () => {
 
     const [message, setMessage] = useState<Array<Alert>>([]);
-
+    const [isSell, setIsSell] = useState<boolean>(false);
 
 
     const handleSubmit = (sell: Sell) => {
 
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const sellService = useSellService();
+        console.log(sell)
         sellService.makeSell(sell).then( response => {
-
-            setMessage([{ messageType: "success", message: "Venda realizada com sucesso" }])
+            setMessage([{ messageType: "is-success", message: "Venda realizada com sucesso" }])
+            
         }).catch( error => {
-                setMessage([{ messageType: "error", message: "Erro ao realizar venda, entre em contato com o desenvolvedor" }])
+                setMessage([{ messageType: "is-danger", message: "Erro ao realizar venda, entre em contato com o desenvolvedor" }])
             })
 
+    }
+
+    const handleNewSell = (condition : boolean) => {
+        setIsSell(condition)
+        setMessage([])
     }
 
 
@@ -29,7 +35,7 @@ export const Sells: React.FC = () => {
     return (
         <Layout title="Vendas" message={message}>
 
-            <SellForm onSubmit={handleSubmit} />
+            <SellForm onSubmit={handleSubmit} isSell={isSell} onNewSell={handleNewSell} />
 
         </Layout>
 

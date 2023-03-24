@@ -25,9 +25,11 @@ const formatter = new Intl.NumberFormat('pt-BR', {
 
 interface SellFormProps {
     onSubmit: (sell: Sell) => void;
+    isSell?: boolean;
+    onNewSell?: (condition: boolean) => void;
 }
 
-export const SellForm: React.FC<SellFormProps> = ({ onSubmit }) => {
+export const SellForm: React.FC<SellFormProps> = ({ onSubmit, isSell, onNewSell }) => {
 
     const service = useClientsService();
     const serviceProduct = useProductsService();
@@ -64,14 +66,18 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit }) => {
         // console.log(client)
         setProduct(null)
         setProductId('')
+
         onSubmit({
-            client:  client ,
+            client: client,
             paymentMethod: payment,
             item: productAdded,
             total: sumTotal()
+
         })
 
+
     }
+
 
 
 
@@ -83,6 +89,11 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit }) => {
                 setClients(clients)
             })
         // console.log(clients.content)
+    }
+
+
+    const isSelling = () => {
+
     }
 
     const handleProductSelected = async (e: any) => {
@@ -143,20 +154,33 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit }) => {
         setFilteredProducts(filteredProducts)
     }
 
-    const sumTotal = () => {
+    const sumTotal = (): number => {
 
-        const totals : number[] = productsAdded.map(it => Number(it.quantity) * Number(it.product?.price))
-        if(totals.length){
-            return  totals.reduce((sumNow = 0, itemValue) => sumNow + itemValue )
-        }else{
+        const totals: number[] = productsAdded.map(it => Number(it.quantity) * Number(it.product?.price))
+        if (totals.length) {
+            return totals.reduce((sumNow = 0, itemValue) => sumNow + itemValue)
+        } else {
             return 0
         }
-        
+
+    }
+
+    const newProduct = () => {
+        setProduct(null)
+        setProductId('')
+        setProductQuantity(0)
+
+
+        onNewSell?.(false) 
     }
 
     const enableAddButton = () => {
         return !product || !productQuantity
     }
+
+
+
+
 
     return (
 
@@ -236,7 +260,7 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit }) => {
                     <DataTable value={productsAdded}
                         emptyMessage="Nenhum produto adicionado"
                     >
-                        <Column  body={(it: ItemSell) => {
+                        <Column body={(it: ItemSell) => {
 
                             const handleDelete = () => {
                                 const products = productsAdded.filter(item => item.product?.id !== it.product?.id)
@@ -305,11 +329,21 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit }) => {
                         </div>
                     </div>
 
-                    <br/>
+                    <br />
 
 
                 </div>
-                <Button type="submit" label="Finalizar" />
+
+                {isSell == false ?
+                    (
+                        <Button type="submit" label="Finalizar" />
+                        )
+                        :
+                        (
+                        <Button type="button" label="Novo Produto" onClick={newProduct} />
+                    )
+                }
+
                 <Dialog position="center"
                     header="Erro"
                     visible={!!message}

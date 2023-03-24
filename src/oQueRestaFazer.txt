@@ -4,3 +4,4 @@ criar componente para os dialogs
 explorar as opções de tema do primereact
 formatar o campo dos valores dos products
 fazer validation dos campos de venda
+Arrumar botão de nova venda
