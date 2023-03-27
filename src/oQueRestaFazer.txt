@@ -1,6 +1,5 @@
 
 Arrumar bugs e deixar código mais limpo
-criar componente para os dialogs
 explorar as opções de tema do primereact
 formatar o campo dos valores dos products
 fazer validation dos campos de venda

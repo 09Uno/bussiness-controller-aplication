@@ -8,7 +8,7 @@ import { AutoComplete, AutoCompleteCompleteEvent, } from 'primereact/autocomplet
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
-
+import * as yup from "yup";
 
 
 import { Button } from 'primereact/button';
@@ -22,6 +22,8 @@ const formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
 });
+
+
 
 interface SellFormProps {
     onSubmit: (sell: Sell) => void;
@@ -42,8 +44,12 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit, isSell, onNewSell 
     const [filteredProducts, setFilteredProducts] = useState<Array<Product>>([])
 
 
+
+
     const paymentMethod: string[] = ["Dinheiro", "Cartao", "Pix", "Boleto"]
     const [payment, setPayment] = useState<string>('')
+
+    const [isPaymentFilled, setIsPaymentFilled] = useState<boolean>(true)
 
     const [total, setTotal] = useState<number>(0)
 
@@ -67,14 +73,22 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit, isSell, onNewSell 
         setProduct(null)
         setProductId('')
 
-        onSubmit({
-            client: client,
-            paymentMethod: payment,
-            item: productAdded,
-            total: sumTotal()
+        if (payment == "") {
+            console.log("Preencha todos os campos")
+            setIsPaymentFilled(false)
 
-        })
+        } else {
 
+            onSubmit({
+                client: client,
+                paymentMethod: payment,
+                item: productAdded,
+                total: sumTotal()
+
+            })
+            setIsPaymentFilled(true)
+
+        }
 
     }
 
@@ -171,14 +185,14 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit, isSell, onNewSell 
         setProductQuantity(0)
 
 
-        onNewSell?.(false) 
+        onNewSell?.(false)
     }
 
     const enableAddButton = () => {
         return !product || !productQuantity
     }
 
-
+    
 
 
 
@@ -309,6 +323,10 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit, isSell, onNewSell 
                                 placeholder="Selecione"
                             />
                         </div>
+                        {!isPaymentFilled &&
+                            <p className="help is-danger" >Prencha o campo forma de pagamentos</p>
+                        }
+
                     </div>
 
                     <br />
@@ -336,10 +354,10 @@ export const SellForm: React.FC<SellFormProps> = ({ onSubmit, isSell, onNewSell 
 
                 {isSell == false ?
                     (
-                        <Button type="submit" label="Finalizar" />
-                        )
-                        :
-                        (
+                        <Button type="submit" label="Finalizar"  />
+                    )
+                    :
+                    (
                         <Button type="button" label="Novo Produto" onClick={newProduct} />
                     )
                 }

@@ -12,9 +12,9 @@ interface ILayoutProps {
 export const Layout: React.FC<ILayoutProps> = (props: ILayoutProps) => {
     return (
         <div className="app">
-            <section className="mainContainer columns fullHeight">
+            <section className="main-content columns is-fullheight">
                 <Menu />
-                <div className="container columns is-full" >
+                <div className="container column is-10" >
                     <div className="section">
                         <div className="card">
                             <div className="card-header">

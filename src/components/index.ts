@@ -1,3 +1,4 @@
+import { SalesDashboard } from './dashboard/index';
 'use client'
 
 
@@ -17,7 +18,7 @@ import "primereact/resources/primereact.min.css";
 //icons
 import "primeicons/primeicons.css";                                         
         
-
+export {SalesDashboard} from "./dashboard/index"
 
 //products
 export {RegistrationOfProducts} from "./products/registration/index";
