@@ -1,20 +1,21 @@
+import { SalesDashboardData } from "@/models/dashboard"
 import { Card } from "primereact/card"
 
 
 
 interface DashboardProps {
-    clients?: number
-    products?: number
+    client?: number
+    product?: number
     sales?: number
 }
 
-export const SalesDashboard: React.FC<DashboardProps> = ({ clients, products, sales }) => {
+export const SalesDashboard: React.FC<SalesDashboardData> = ({ clients, products, sales }) => {
 
     const productsStyle = {
         backgroundColor: 'red',
         color: '#fff',
     }
-    const clientsStyle = {
+    const clientsStyl = {
         backgroundColor: 'green',
         color: '#fff',
     }
@@ -33,7 +34,7 @@ export const SalesDashboard: React.FC<DashboardProps> = ({ clients, products, sa
                         </Card>
                     </div>
                     <div className="p-col">
-                        <Card title="Clientes" style={clientsStyle}>
+                        <Card title="Clientes" style={clientsStyl}>
                             <p className="p-m-0">{clients}</p>
                         </Card>
                     </div>
